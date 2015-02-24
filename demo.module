@@ -32,4 +32,6 @@ function demo_menu() {
   return $items;
 }
 
+// test
+
 /* End of file demo.php */
