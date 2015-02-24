@@ -26,12 +26,11 @@ function demo_menu() {
     'access arguments' => array('access content'),
     // 'access_callback' =>
     'type' => MENU_NORMAL_ITEM,
-    // 'file' => ,
+    'file' => 'demo_main_page.inc',
   );
 
   return $items;
 }
 
-// test
 
 /* End of file demo.php */
