@@ -1,36 +1,147 @@
 <?php
 
+function demo_permission() {
+  return array(
+    'access content' =>  array(
+      'title' => t('Zobrazeni pro vsechny.'),
+      'description' => t('Zobrazeni vseho.'),
+    ),
+    'contact view' =>  array(
+      'title' => t('Zobrazeni kontaktu.'),
+      'description' => t('Zobrazeni kontaktnich udaju.'),
+    ),
+    'only for me' => array(
+      'title' => t('Jen pro me'),
+      'description' => t('Obsah jen pro me'),
+    )
+  );
+}
+
 /**
 * Implements hook_menu().
+*
+* - Pripojeni css stylu.
  */
 function demo_menu() {
-  /*
-   *$items['blog'] = array(
-   *  'title' => 'blogs',
-   *  'page callback' => 'blog_page',
-   *  'access arguments' => array('access content'),
-   *  'type' => MENU_SUGGESTED_ITEM,
-   *);
-   *  MENU_NORMAL_ITEM - Normal menu items show up in the menu tree and can be moved/hidden by the administrator
-   *  MENU_CALLBACK - Callbacks simply register a path so that the correct information is generated when the path is accessed.
-   *  MENU_SUGGESTED_ITEM - Modules may "suggest" menu items that the administrator may enable.
-   *  MENU_LOCAL_ACTION - Local actions are menu items that describe actions on the parent item such as adding a new user or block, and are rendered in the action-links list in your theme.
-   *  MENU_LOCAL_TASK - Local tasks are menu items that describe different displays of data, and are generally rendered as tabs.
-   *  MENU_DEFAULT_LOCAL_TASK - Every set of local tasks should provide one "default" task, which
-   *  should display the same page as the parent item.     
-   */
-  $items['demo'] = array(
-    'title' => 'Demo - main page',
-    'page callback' => 'demo_main_page',
+  $items['demo/page'] = array(
+    'title' => 'Demo - page',
+    'page callback' => 'demo_page',
     'page arguments' => array(),
     'access arguments' => array('access content'),
     // 'access_callback' =>
     'type' => MENU_NORMAL_ITEM,
-    'file' => 'demo_main_page.inc',
+    'file' => 'demo_page.inc',
+  );
+
+  $items['demo/form'] = array(
+    'title' => 'Stranka s formularem.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('demo_formular'),
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'demo_form.inc',
+  );
+
+  $items['demo/form-page'] = array(
+    'title' => 'Stranka s formularem',
+    'page callback' => 'demo_form_page',
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'demo_form_page.inc',
+  );
+
+  $items['demohookaccess'] = array(
+    'title' => 'Ukazka pouziti hook_access',
+    'page callback' => 'demo_hook_access',
+    'access arguments' => array('only for me'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'demo_hook_access.inc',
+  );
+
+  $items['demo/theme/table'] = array(
+    'title' => 'Stranka s tabulkou',
+    'page callback' => 'demo_theme_table',
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'demo_theme_table.inc',
+  );
+
+  $items['demo/email'] = array(
+    'title' => 'Odesilani e-mailu',
+    'page callback' => 'demo_email',
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'demo_email.inc',
   );
 
   return $items;
 }
 
+/**
+ * Implements hook_block_info().
+ */
+function demo_block_info() {
+  // This example comes from node.module.
+  /*
+   *$blocks['syndicate'] = array(
+   *  'info' => t('Syndicate'),
+   *  'cache' => DRUPAL_NO_CACHE
+   *);
+   */
+  $blocks['demo_menu'] = array(
+    'info' => t('Demo menu'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function demo_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+  /*
+   *case 'syndicate':
+   *  $block['subject'] = t('Syndicate');
+   *  $block['content'] = theme('feed_icon', array('url' => url('rss.xml'), 'title' => t('Syndicate')));
+   *  break;
+   *
+   *case 'recent':
+   *  if (user_access('access content')) {
+   *    $block['subject'] = t('Recent content');
+   *    if ($nodes = node_get_recent(variable_get('node_recent_block_count', 10))) {
+   *      $block['content'] = theme('node_recent_block', array(
+   *        'nodes' => $nodes,
+   *      ));
+   *    } else {
+   *      $block['content'] = t('No content available.');
+   *    }
+   *  }
+   *  break;
+   */
+    case 'demo_menu':
+      $block['subject'] = t('Demo menu');
+      $block['content'] = demo_blok_menu();
+      break;
+
+  }
+  return $block;
+}
+
+function demo_blok_menu() {
+  $output = '';
+  $output .= '<ul>';
+  $output .= '<li>' . l('Stranka', 'demo/page') . '</li>';
+  $output .= '<li>' . l('Stranka s formularem', 'demo/form') . '</li>';
+  $output .= '<li>' . l('Stranka s formularem a textem', 'demo/form-page') . '</li>';
+  $output .= '<li>' . l('hook_access', 'demohookaccess') . '</li>';
+  $output .= '<li>' . l('Tabulka', 'demo/theme/table') . '</li>';
+  //$output .= '<li></li>';
+  $output .= '</ul>';
+  return $output;
+}
 
 /* End of file demo.php */
