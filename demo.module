@@ -74,6 +74,14 @@ function demo_menu() {
     'file' => 'demo_email.inc',
   );
 
+  $items['demo/db-select'] = array(
+    'title' => 'Vypis z databaze pomoci db_select',
+    'page callback' => 'demo_db_select',
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'demo_db_select.inc',
+  );
+
   return $items;
 }
 

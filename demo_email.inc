@@ -64,10 +64,10 @@ function demo_email_form_submit($form, &$form_state) {
   drupal_mail(
     'demo',
     'demo',
-    $account->mail,
+    //$account->mail,
+    'jiri.wolf@gmail.com',
     user_preferred_language($account),
     $form_state['values'],
-    $data,
     variable_get('site_mail', NULL),
     TRUE
   );
